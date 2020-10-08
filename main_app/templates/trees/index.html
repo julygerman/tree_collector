@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Tree List</h1>
+
+{% for tree in trees %}
+  <div class="card">
+  <a href="{% url 'detail' tree.id %}">
+    <div class="card-content">
+       <img src={{tree.image}}>
+      <span class="card-title">{{ tree.name }}</span>
+      <p>Tree Type: {{ tree.tree_type }}</p>
+      <p>Soil Preferences: {{ tree.soil_Preferences }}</p>
+      <p>Description: {{ tree.description }}</p>
+      <p>Attributes: {{ tree.attributes }}</p>
+    </div>
+    </a>
+  </div>
+ {% endfor %}
+{% endblock %}

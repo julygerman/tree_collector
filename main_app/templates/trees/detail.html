@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{{tree.name}} Details</h1>
+  <div class="card">
+    <div class="card-content">
+       <img src={{tree.image}}>
+      <span class="card-title">{{ tree.name }}</span>
+      <p>Tree Type: {{ tree.tree_type }}</p>
+      <p>Soil Preferences: {{ tree.soil_Preferences }}</p>
+      <p>Description: {{ tree.description }}</p>
+      <p>Attributes: {{ tree.attributes }}</p>
+    </div>
+    <div class="card-action">
+      <a href="{% url 'trees_update' tree.id %}">Edit</a>
+      <a href="{% url 'trees_delete' tree.id %}">Delete</a>
+    </div>
+    <div class="col s6">
+      <form action="{% url 'add_maintenance' tree.id %}" method="post">
+        {% csrf_token %}
+        {{ maintenance_form.as_p }}
+        <input type="submit" class="btn" value="Add Maintenance">
+      </form>
+      <br>
+      {% if tree.cared_for_today %}
+        <div class="card-panel teal-text center-align">{{tree.name}} has been cared for today</div>
+      {% else %}
+        <div class="card-panel red-text center-align">{{tree.name}} might be up for maintenance</div>
+      {% endif %}
+      <table class="striped">
+        <thead>
+          <tr><th>Date</th><th>Maintenance</th></tr>
+        </thead>
+        <tbody>
+          {% for maintenance in tree.maintenance_set.all %}
+            <tr>
+              <td>{{maintenance.date}}</td>
+              <td>{{maintenance.get_care_display}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <hr>
+<div class="row">
+  <div class="col s6">
+    <h3>{{ tree.name }}'s Workers</h3>
+    {% if tree.workers.count %}
+      {% for worker in tree.workers.all %}
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">
+              <span>{{ worker.name }}</span> : {{ worker.age}} years old
+            </span>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h5>No Assigned Workers</h5>
+    {% endif %}
+  </div>
+  <div class="col s6">
+    <h3>Available Workers</h3>
+    {% if workers.count %}
+      {% for worker in workers.all %}
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">
+              <span>{{ worker.name }}</span> : {{ worker.age}} years old
+            </span>
+          </div>
+          <div class="card-action">
+            <form action="{%url 'assoc_worker' tree.id worker.id%}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn">Assign</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h5>{{tree.name}} Already Has All Available Workers Assigned</h5>
+    {% endif %}
+  </div>
+  <script>
+    var dateEl = document.getElementById('id_date');
+    M.Datepicker.init(dateEl, {
+      format: 'yyyy-mm-dd',
+      defaultDate: new Date(),
+      setDefaultDate: true,
+      autoClose: true
+    });
+
+    var selectEl = document.getElementById('id_care');
+    M.FormSelect.init(selectEl);
+  </script>
+{% endblock %}
