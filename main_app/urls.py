@@ -16,4 +16,5 @@ urlpatterns = [
   path('workers/<int:pk>/update/', views.WorkerUpdate.as_view(), name='workers_update'),
   path('workers/<int:pk>/delete/', views.WorkerDelete.as_view(), name='workers_delete'),
   path('trees/<int:tree_id>/assoc_worker/<int:worker_id>/', views.assoc_worker, name='assoc_worker'),
+  path('accounts/signup/', views.signup, name='signup'),
 ]
